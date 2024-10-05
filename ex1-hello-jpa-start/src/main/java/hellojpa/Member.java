@@ -1,7 +1,10 @@
 package hellojpa;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
@@ -9,6 +12,8 @@ import jakarta.persistence.Table;
 @Table(name = "Member")	
 public class Member {
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
+	@SequenceGenerator(name = "member_seq_gen", sequenceName = "MEMBER_SEQ", initialValue = 1, allocationSize = 50)
 	private Long id;
 	
 	//컬럼명 맵핑
