@@ -1,5 +1,7 @@
 package hellojpa.club;
 
+import java.util.List;
+
 import hellojpa.club.entity.Member;
 import hellojpa.club.entity.Team;
 import jakarta.persistence.EntityManager;
@@ -30,17 +32,21 @@ public class Main {
 			em.clear();	//db에서 직접 조회
 			
 			Member findMember = em.find(Member.class, member.getId());
-			Team findTeam = findMember.getTeam();
+			List<Member>findMembers = findMember.getTeam().getMembers();	//양방향 연관관계 실행!
 			
+			for(Member item : findMembers) {
+				System.out.println("findMembers = " + item);
+			}
 			System.out.println("[INFO]===========================================");
-			System.out.println("Member INFO = " + member);
-			System.out.println("Team INFO = " + teamA);
-			System.out.println("findTeam INFO = " + findTeam);
+//			System.out.println("Member INFO = " + member);
+//			System.out.println("Team INFO = " + teamA);
+			System.out.println("findTeam INFO = " + findMembers);
 			System.out.println("[INFO]===========================================");
 			
 			tx.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 			tx.rollback();
 		} finally {
 			em.close();

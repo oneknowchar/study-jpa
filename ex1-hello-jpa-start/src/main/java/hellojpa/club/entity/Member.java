@@ -21,10 +21,10 @@ public class Member {
 
 	private String userName;
 
-//	@Column(name = "TEAM_ID")
-//	private Long teamId;
-
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER) //default
 	@JoinColumn(name = "TEAM_ID")
 	private Team team;
+	
+	//인프런 연관 관계의 주인! 많은 쪽이 주인이다. 1쪽은 그저 조회만!!!
+//https://www.inflearn.com/course/lecture?courseSlug=ORM-JPA-Basic&unitId=21697&subtitleLanguage=ko&tab=community&q=1274636&category=questionDetail
 }
