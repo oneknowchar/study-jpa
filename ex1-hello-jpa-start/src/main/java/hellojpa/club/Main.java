@@ -1,0 +1,51 @@
+package hellojpa.club;
+
+import hellojpa.club.entity.Member;
+import hellojpa.club.entity.Team;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
+
+public class Main {
+	public static void main(String[] args) {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("helloJpa");
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+
+		System.out.println("[START]===========================================");
+		
+		try {
+			Team teamA = new Team();
+			teamA.setName("teamA");
+			em.persist(teamA);
+			
+			Member member = new Member();
+			member.setUserName("user00");
+			member.setTeam(teamA);
+			em.persist(member);
+			
+			em.flush();	//영속성 청소
+			em.clear();	//db에서 직접 조회
+			
+			Member findMember = em.find(Member.class, member.getId());
+			Team findTeam = findMember.getTeam();
+			
+			System.out.println("[INFO]===========================================");
+			System.out.println("Member INFO = " + member);
+			System.out.println("Team INFO = " + teamA);
+			System.out.println("findTeam INFO = " + findTeam);
+			System.out.println("[INFO]===========================================");
+			
+			tx.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+		System.out.println("[END]===========================================");
+	}
+}
