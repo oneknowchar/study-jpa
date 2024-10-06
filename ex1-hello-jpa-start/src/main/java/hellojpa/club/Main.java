@@ -25,11 +25,11 @@ public class Main {
 			
 			Member member = new Member();
 			member.setUserName("user00");
-			member.setTeam(teamA);
+			member.chageTeam(teamA);	//멤버를 팀에 세팅하면서, 팀에 멤버리스트에도 add() 진행!
 			em.persist(member);
 			
-			em.flush();	//영속성 청소
-			em.clear();	//db에서 직접 조회
+//			em.flush();	//영속성 청소
+//			em.clear();	//db에서 직접 조회
 			
 			Member findMember = em.find(Member.class, member.getId());
 			List<Member>findMembers = findMember.getTeam().getMembers();	//양방향 연관관계 실행!
