@@ -1,5 +1,6 @@
 package hellojpa.shop.entity;
 
+import hellojpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +11,7 @@ import lombok.Data;
 @Entity(name = "SHOP_MEMBER")
 @Table(name = "SHOP_MEMBER")
 @Data
-public class Member {
+public class Member extends BaseEntity{
 	@Id @GeneratedValue
 	@Column(name = "MEMBER_ID")
 	private Long id;

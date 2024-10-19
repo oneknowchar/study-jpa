@@ -1,5 +1,6 @@
 package hellojpa.shop.entity;
 
+import hellojpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +11,7 @@ import lombok.Data;
 @Entity(name = "SHOP_ORDER_ITEM")
 @Table(name = "SHOP_ORDER_ITEM")
 @Data
-public class OrderItem {
+public class OrderItem extends BaseEntity{
 
 	@Id @GeneratedValue
 	@Column(name = "ORDER_ITEM_ID")

@@ -1,5 +1,6 @@
 package hellojpa.club.entity;
 
+import hellojpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Entity(name = "CLUB_MEMBER")
 @Table(name = "CLUB_MEMBER")
 @Data
-public class Member {
+public class Member extends BaseEntity {
 	@Id
 	@GeneratedValue
 	@Column(name = "MEMBER_ID")

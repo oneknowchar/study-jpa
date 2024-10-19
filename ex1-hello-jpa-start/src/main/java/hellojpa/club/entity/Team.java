@@ -3,6 +3,7 @@ package hellojpa.club.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import hellojpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Entity(name="CLUB_TEAM")
 @Table(name="CLUB_TEAM")
 @Data
-public class Team {
+public class Team extends BaseEntity{
 	@Id @GeneratedValue
 	@Column(name = "TEAM_ID")	//joinColum의 값
 	private Long id;

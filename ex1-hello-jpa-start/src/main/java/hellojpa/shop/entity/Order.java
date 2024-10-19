@@ -2,6 +2,7 @@ package hellojpa.shop.entity;
 
 import java.time.LocalDateTime;
 
+import hellojpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +17,7 @@ import lombok.Data;
 @Entity(name = "SHOP_ORDER")
 @Table(name = "SHOP_ORDER")
 @Data
-public class Order {
+public class Order extends BaseEntity{
 	@Id @GeneratedValue
 	@Column(name = "ORDER_ID")
 	private Long id;
