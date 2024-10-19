@@ -8,6 +8,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -20,6 +22,8 @@ public class Order {
 	private Long id;
 	
 	@Column(name = "MEMBER_ID")
+	@ManyToOne
+	@JoinColumn(name="MEMBER_ID")
 	private Long memberId;
 	
 	private LocalDateTime orderDate;

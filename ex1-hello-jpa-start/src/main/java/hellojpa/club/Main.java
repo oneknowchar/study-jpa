@@ -45,8 +45,6 @@ public class Main {
 			
 			tx.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
-			
 			tx.rollback();
 		} finally {
 			em.close();
