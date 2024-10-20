@@ -14,12 +14,13 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-public class Team extends BaseEntity{
+public class Product {
 	@Id @GeneratedValue
 	private Long id;
-	private String teamName;
+	private String name;
+	private int price;
+	private int stockAmount;
 	
-	@OneToMany(mappedBy = "team", fetch = FetchType.LAZY)
-	private List<Member>members = new ArrayList<>();
-	
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+	private List<Order> orders = new ArrayList<>();
 }
