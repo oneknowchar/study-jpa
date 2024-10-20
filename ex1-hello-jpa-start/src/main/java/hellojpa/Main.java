@@ -18,24 +18,25 @@ public class Main {
 
 		
 		try {
-			Team team = new Team();
-			team.setTeamName("powerTeam");
+			Team findTeam = em.find(Team.class, 2);
 			
-			Member member = new Member();
-			member.setUserName("user00");
-			member.setTeam(team);
-			
-			em.persist(team);
-			em.persist(member);
+			Member findMember = findTeam.getMembers().get(0);
 			
 			em.flush();
 			em.clear();
 			
+			//JPQL_ example_1
+			List<Member> result1 = em
+									.createQuery("select m From Member m where m.id like 'user%'", Member.class)
+									.getResultList();
 			
-			Member findMember = em.find(Member.class, member.getId());
-			//
-			System.out.println("findMember name = " + findMember.getUserName());
-			System.out.println("team name = " + findMember.getTeam().getTeamName());
+			//JPQL_ example_2
+			List<Member> result2 = em
+									.createQuery("select m From Member m where m.id > 10", Member.class)
+									.getResultList();
+			
+			System.out.println(result1);
+			System.out.println(result2);
 			
 			tx.commit();
 		} catch (Exception e) {
