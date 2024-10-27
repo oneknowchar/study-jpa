@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+#       show_sql: true  //sysout과 동일함
+        
+
+logging:
+  level:
+    org.hibernate.sql: debug #logger로 찍는거임
+   
