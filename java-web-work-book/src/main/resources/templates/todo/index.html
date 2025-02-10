@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>hello world!</h1>
+<div>
+	<a href="/todo/register">register</a>
+	<a href="/todo/read?tno=52">/todo/read?tno=264</a>
+</div>
+    <div th:if="${result}">
+        <p>결과: <span th:text="${result}"></span></p>
+    </div>
+	<ul th:each="todo : ${todos}">
+		<li th:id="|litno${todo.tno}|">
+			<span th:text="|${todo.title}, ${todo.tno}|"></span>
+			<button th:onclick="|remove(${todo.tno})|">X</button>
+		</li>
+	</ul>
+
+<script>
+	function remove(tno){
+		fetch('/todo/remove', {
+			method : 'post',
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ 'tno': tno })
+		})
+		.then(data=>{
+			console.log(data)
+			document.querySelector('#litno'+tno).remove();
+		})
+	}
+</script>
+</body>
+</html>

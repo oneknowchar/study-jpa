@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<form action="/todo/register" method="post">
+		<div>
+			<input type="text" name="title" placeholder="insert title">
+		</div>
+		<div>
+			<input type="date" name="dueDate">
+		</div>
+		<div>
+			<button>reset</button>
+			<button>register</button>
+		</div>
+		<br>
+		<div th:if="${errors}" style="border:1px solid red">
+			<ul th:each="error : ${errors}">
+				<li th:text="${error}" >errorzz</li>
+			</ul>
+		</div>
+	</form>
+	<button id="test">test</button>
+	
+	<script>
+	test.addEventListener('click',()=>{ console.log('clicked')});
+	</script>
+</body>
+</html>
