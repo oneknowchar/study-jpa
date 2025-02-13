@@ -35,7 +35,7 @@ public class TodoController {
             pageRequestDto = PageRequestDto.builder().build();
         }
 
-        model.addAttribute("pageResponseDto", todoService.getList(pageRequestDto));
+        model.addAttribute("responseDto", todoService.getList(pageRequestDto));
 
         return "todo/index";
     }
