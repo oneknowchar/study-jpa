@@ -1,7 +1,5 @@
 package com.workbook.controller;
 
-import java.util.List;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,68 +25,68 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TodoController {
 
-	private final TodoService todoService;
+    private final TodoService todoService;
 
-	@GetMapping("/index")
-	public String todoIndex(Model model, PageRequestDto pageRequestDto) {
-		//전체
-//		List<TodoDto> todos = todoService.findTodos();
-//		model.addAttribute("todos", todos);
-		
-		//jpql 페이징
-		List<TodoDto> todoList = todoService.selectList(pageRequestDto);
-		int count = todoService.getCount(pageRequestDto);
-		model.addAttribute("todos", todoList);
-		model.addAttribute("count",count);
-		return "todo/index";
-	}
+    @GetMapping("/index")
+    public String todoIndex(Model model, @Valid PageRequestDto pageRequestDto, BindingResult bindingResult) {
 
-	@GetMapping("/read")
-	@ResponseBody
-	public TodoDto read(@RequestParam("tno") Long tno) {
-		return todoService.findById(tno); // TodoDto.class
-	}
+        //에러가 난다면, 디폴트 값인 1과 10을 준다. 따라서 에러가 나더라도 화면이 깨질일이 없다.
+        if(bindingResult.hasErrors()) {
+            pageRequestDto = PageRequestDto.builder().build();
+        }
 
-	@GetMapping("/register")
-	public String register() {
-		return "todo/register";
-	}
+        model.addAttribute("pageResponseDto", todoService.getList(pageRequestDto));
 
-	@PostMapping("/register")
-	public String registerPost(@Valid TodoDto todoDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-		log.info("POST todo Register");
-		
-		if(bindingResult.hasErrors()) {
-			log.info("has errors.......");
-			redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-			return "redirect:/todo/register";
-		}
-		
+        return "todo/index";
+    }
+
+    @GetMapping("/read")
+    @ResponseBody
+    public TodoDto read(@RequestParam("tno") Long tno) {
+        return todoService.findById(tno); // TodoDto.class
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "todo/register";
+    }
+
+    @PostMapping("/register")
+    public String registerPost(@Valid TodoDto todoDto, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        log.info("POST todo Register");
+
+        if (bindingResult.hasErrors()) {
+            log.info("has errors.......");
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/todo/register";
+        }
+
 //		try {
 //			todoService.register(todoDto);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		
-		return "redirect:/todo/index";
 
-	}
+        return "redirect:/todo/index";
 
-	@PostMapping("/remove")
-	public String remove(@RequestBody TodoDto todoDto) {
-		try {
-			todoService.remove(todoDto);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "redirect:/todo/index";
-	}
+    }
 
-	@GetMapping("/ex5")
-	public String getMethodName(RedirectAttributes redirectAttributes) {
-		redirectAttributes.addAttribute("name", "abc");
-		redirectAttributes.addFlashAttribute("result", "success");
-		return "redirect:/todo/index";
-	}
+    @PostMapping("/remove")
+    public String remove(@RequestBody TodoDto todoDto) {
+        try {
+            todoService.remove(todoDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/todo/index";
+    }
+
+    @GetMapping("/ex5")
+    public String getMethodName(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addAttribute("name", "abc");
+        redirectAttributes.addFlashAttribute("result", "success");
+        return "redirect:/todo/index";
+    }
 
 }

@@ -7,33 +7,35 @@
 <body>
 <h1>hello world!</h1>
 <div>
-	<a href="/todo/register">register</a>
-	<a href="/todo/read?tno=52">/todo/read?tno=264</a>
+    <a href="/todo/register">register</a>
+    <a href="/todo/read?tno=52">/todo/read?tno=264</a>
 </div>
+
     <div th:if="${result}">
         <p>결과: <span th:text="${result}"></span></p>
     </div>
-	<ul th:each="todo : ${todos}">
-		<li th:id="|litno${todo.tno}|">
-			<span th:text="|${todo.title}, ${todo.tno}|"></span>
-			<button th:onclick="|remove(${todo.tno})|">X</button>
-		</li>
-	</ul>
+    <ul th:each="todo : ${todos}">
+        <li th:id="|litno${todo.tno}|">
+            <span th:text="|${todo.title}, ${todo.tno}|"></span>
+            <button th:onclick="|remove(${todo.tno})|">X</button>
+        </li>
+    </ul>
+    <div th:text="${pageResponseDto}">dummypagenation</div>
 
 <script>
-	function remove(tno){
-		fetch('/todo/remove', {
-			method : 'post',
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({ 'tno': tno })
-		})
-		.then(data=>{
-			console.log(data)
-			document.querySelector('#litno'+tno).remove();
-		})
-	}
+    function remove(tno){
+        fetch('/todo/remove', {
+            method : 'post',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ 'tno': tno })
+        })
+        .then(data=>{
+            console.log(data)
+            document.querySelector('#litno'+tno).remove();
+        })
+    }
 </script>
 </body>
 </html>
