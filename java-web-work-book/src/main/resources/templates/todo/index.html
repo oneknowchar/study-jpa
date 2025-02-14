@@ -19,7 +19,7 @@
     </div>
     <ul th:each="todo : ${responseDto.dtoList}">
         <li th:id="|litno${todo.tno}|">
-            <a th:text="|${todo.title}, ${todo.tno}|" th:href="@{'/todo/read' + ${responseDto.getLink(todo.tno)}}"></a>
+            <a th:text="|${todo.title}, ${todo.tno}|" th:href="@{'/todo/modify' + ${responseDto.getLink(todo.tno)}}"></a>
             <button th:onclick="|remove(${todo.tno})|">X</button>
         </li>
     </ul>

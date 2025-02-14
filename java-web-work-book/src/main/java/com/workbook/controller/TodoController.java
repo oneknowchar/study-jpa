@@ -1,5 +1,7 @@
 package com.workbook.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.workbook.dto.PageRequestDto;
+import com.workbook.dto.PageResponseDto;
 import com.workbook.dto.TodoDto;
 import com.workbook.service.TodoService;
 
@@ -62,11 +65,7 @@ public class TodoController {
             return "redirect:/todo/register";
         }
 
-//		try {
-//			todoService.register(todoDto);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+        todoService.register(todoDto);
 
         return "redirect:/todo/index";
 
@@ -79,6 +78,22 @@ public class TodoController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "redirect:/todo/index";
+    }
+
+    @GetMapping("/modify")
+    public String modify(Model model, @RequestParam("tno") Long tno, PageRequestDto pageRequestDto) {
+        model.addAttribute("todo", todoService.findById(tno));
+        model.addAttribute("pageRequestDto", pageRequestDto);
+        return "todo/modify";
+    }
+
+    @PostMapping("/modify")
+    public String modify(@Valid TodoDto todoDto, BindingResult bindingResult, RedirectAttributes rttr, PageRequestDto pageRequestDto) {
+        todoService.modify(todoDto);
+        rttr.addAttribute("page", pageRequestDto.getPage());
+        rttr.addAttribute("size", pageRequestDto.getSize());
+
         return "redirect:/todo/index";
     }
 

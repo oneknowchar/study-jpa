@@ -21,17 +21,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class TodoDto {
-	private Long tno;
+    private Long tno;
 
-	@NotEmpty
-	private String title;
+    @NotEmpty
+    private String title;
 
-	@Future
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDate dueDate;
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime finished;
+    @Future
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDate dueDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDate finished;
 
-	@NotEmpty
-	private String writer;
+    @NotEmpty
+    private String writer;
 }

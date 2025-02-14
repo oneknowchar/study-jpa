@@ -5,19 +5,21 @@
 <title>Insert title here</title>
 </head>
 <body>
-    <form action="/todo/register" method="post">
+    <form action="/todo/modify" method="post">
+        <input type="hidden" name="tno" th:value="${todo.tno}">
+        <input type="hidden" name="page" th:value="${pageRequestDto.page}">
+        <input type="hidden" name="size" th:value="${pageRequestDto.size}">
         <div>
-            <input type="text" name="writer" placeholder="insert writer">
+            <input type="text" name="title" placeholder="insert title" th:value="${todo.title}">
         </div>
         <div>
-            <input type="text" name="title" placeholder="insert title">
+            <input type="date" name="dueDate" th:value="${todo.dueDate}">
         </div>
         <div>
-            <input type="date" name="dueDate">
+        <div th:text="${todo}">
         </div>
-        <div>
             <button>reset</button>
-            <button>register</button>
+            <button>modify</button>
         </div>
         <br>
         <div th:if="${errors}" style="border:1px solid red">

@@ -1,7 +1,6 @@
 package com.workbook.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,17 +22,17 @@ import lombok.ToString;
 @ToString(of = {"tno", "title", "dueDate", "finished"})
 @Builder
 public class Todo {
-	@Id
-	@GeneratedValue
-	@Column(name = "tno")
-	private Long tno;
+    @Id
+    @GeneratedValue
+    @Column(name = "tno")
+    private Long tno;
 
-	@Column(nullable = false, length = 100)
-	private String title;
+    @Column(nullable = false, length = 100)
+    private String title;
 
-	private LocalDate dueDate;
-	private LocalDateTime finished;
-	
-	private String writer;
+    private LocalDate dueDate;
+    private LocalDate finished;
+
+    private String writer;
 
 }

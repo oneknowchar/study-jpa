@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.workbook.dto.PageRequestDto;
 import com.workbook.dto.PageResponseDto;
 import com.workbook.dto.TodoDto;
+import com.workbook.entity.Todo;
 import com.workbook.mapper.TodoMapper;
 import com.workbook.repository.TodoRepository;
 
@@ -62,6 +63,10 @@ public class TodoService {
 
     public int getCount(PageRequestDto pageRequestDto) {
         return todoRepository.getCount(pageRequestDto);
+    }
+
+    public void modify(TodoDto todoDto) {
+        todoRepository.modify(todoDto);
     }
 
 }
