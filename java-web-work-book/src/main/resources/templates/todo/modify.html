@@ -18,8 +18,8 @@
         <div>
         <div th:text="${todo}">
         </div>
-            <button>reset</button>
-            <button>modify</button>
+            <button id="listBtn">목록</button>
+            <button>수정</button>
         </div>
         <br>
         <div th:if="${errors}" style="border:1px solid red">
@@ -28,10 +28,15 @@
             </ul>
         </div>
     </form>
-    <button id="test">test</button>
 
     <script>
-    test.addEventListener('click',()=>{ console.log('clicked')});
+    document.querySelector('#listBtn').addEventListener('click', (e)=>{
+        e.preventDefault();	//폼의 기본 동작을 막는다.
+        const page = document.querySelector('input[name="page"]').value;
+        const size = document.querySelector('input[name="size"]').value;
+
+        window.location.href = `/todo/index?page=${page}&size=${size}`;
+    });
     </script>
 </body>
 </html>

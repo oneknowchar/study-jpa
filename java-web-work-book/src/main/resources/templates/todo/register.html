@@ -16,8 +16,9 @@
             <input type="date" name="dueDate">
         </div>
         <div>
-            <button>reset</button>
-            <button>register</button>
+            <button id="listBtn">목록</button>
+            <button type="reset">리셋</button>
+            <button>등록</button>
         </div>
         <br>
         <div th:if="${errors}" style="border:1px solid red">
@@ -26,10 +27,13 @@
             </ul>
         </div>
     </form>
-    <button id="test">test</button>
+
 
     <script>
-    test.addEventListener('click',()=>{ console.log('clicked')});
+    document.querySelector('#listBtn').addEventListener('click', (e)=>{
+        e.preventDefault(); //폼의 기본 동작을 막는다.
+        window.location.href = `/todo/index`;
+    });
     </script>
 </body>
 </html>

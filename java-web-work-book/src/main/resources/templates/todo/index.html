@@ -19,8 +19,8 @@
     </div>
     <ul th:each="todo : ${responseDto.dtoList}">
         <li th:id="|litno${todo.tno}|">
-            <a th:text="|${todo.title}, ${todo.tno}|" th:href="@{'/todo/modify' + ${responseDto.getLink(todo.tno)}}"></a>
-            <button th:onclick="|remove(${todo.tno})|">X</button>
+            <a th:text="|${todo.tno} ) [${todo.writer != null ? todo.writer : '작성자 미상'}] ${todo.title}, |" th:href="@{'/todo/modify' + ${responseDto.getLink(todo.tno)}}"></a>
+            _____<button th:onclick="|remove(${todo.tno})|">X</button>
         </li>
     </ul>
 
