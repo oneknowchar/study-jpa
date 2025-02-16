@@ -10,7 +10,10 @@ spring:
     properties:
       hibernate:
         "[format_sql]": true
-        
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  
 logging.level:
   com.workbook.controller : debug
   "[org.hibernate.SQL]": debug
