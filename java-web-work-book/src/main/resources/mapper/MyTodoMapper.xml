@@ -5,4 +5,8 @@
     <select id="getTime" resultType="string">
         select now()
     </select>
+
+    <select id="selectTodoList" resultType="com.workbook.dto.TodoDto">
+        select * from todo order by tno desc
+    </select>
 </mapper>

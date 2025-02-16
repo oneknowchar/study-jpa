@@ -1,10 +1,13 @@
 package com.workbook.entity;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.workbook.dto.TodoDto;
 import com.workbook.mapper.MyTodoMapper;
 import com.workbook.service.TodoService;
 
@@ -65,7 +68,7 @@ public class TodoTests {
 ////			}
 ////		}
 //		//모든 영속성이 업데이트 되고나서야 실행해야함
-//		em.flush(); 
+//		em.flush();
 //		em.clear();
 //	}
 
@@ -73,5 +76,12 @@ public class TodoTests {
     public void getTime() {
         String str = myTodoMapper.getTime();
         System.out.println(str + "123213");
+    }
+
+    @Test
+    public void selectTodoList() {
+        List<TodoDto> selectTodoList = myTodoMapper.selectTodoList();
+
+        System.out.println(selectTodoList.size());
     }
 }
