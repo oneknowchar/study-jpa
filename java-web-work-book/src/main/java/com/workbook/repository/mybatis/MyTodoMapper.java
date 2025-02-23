@@ -1,4 +1,4 @@
-package com.workbook.mapper;
+package com.workbook.repository.mybatis;
 
 import java.util.List;
 
