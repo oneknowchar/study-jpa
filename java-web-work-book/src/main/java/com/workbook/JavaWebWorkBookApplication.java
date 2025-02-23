@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @ServletComponentScan
 @SpringBootApplication
-@MapperScan("com.workbook.mapper")
+@MapperScan("com.workbook.repository.mybatis")
 public class JavaWebWorkBookApplication {
 
     public static void main(String[] args) {

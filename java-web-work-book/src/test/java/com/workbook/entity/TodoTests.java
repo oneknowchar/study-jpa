@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.dto.TodoDto;
-import com.workbook.mapper.MyTodoMapper;
+import com.workbook.repository.mybatis.MyTodoMapper;
 import com.workbook.service.TodoService;
 
 import jakarta.persistence.EntityManager;
