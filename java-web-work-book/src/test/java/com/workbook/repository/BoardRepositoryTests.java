@@ -5,7 +5,6 @@ package com.workbook.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,12 +16,15 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.entity.Board;
+import com.workbook.service.BoardSearchImpl;
 
 @SpringBootTest
 @Transactional
 public class BoardRepositoryTests {
     @Autowired
     private BoardRepository boardRepository;
+    @Autowired
+    private BoardSearchImpl boardService;
 
     // 테스트시 BeforeEach 추천.
     // @PostConstruct
@@ -92,4 +94,17 @@ public class BoardRepositoryTests {
         System.out.println("페이지 사이즈 : " + result.getSize());
         System.out.println("본문 데이터 : " + result.getContent());
     }
+
+    @Test
+    public void testSearch1() {
+        Pageable pageable = PageRequest.of(1, 10, Sort.by("bno").descending());
+        //querydsl을 이용한 방법1
+        Page<Board> result1 = boardRepository.search1ByQuerydslRepositorySupport(pageable);
+
+        //querydsl을 이용한 방법2 *추천*
+        Page<Board> result2 = boardRepository.search1ByJPAQueryFactory(pageable);
+
+    }
 }
+
+

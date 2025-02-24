@@ -5,13 +5,14 @@ spring:
     username: root
     password: 1234
   jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect   #queryDsl연동을 위해 버전을 낮춰야 했다.
+        format_sql: true
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: update
 
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
