@@ -5,6 +5,7 @@ package com.workbook.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,16 +23,19 @@ public class BoardRepositoryTests {
     // 테스트시 BeforeEach 추천.
     // @PostConstruct
 
-//    @BeforeEach
-//    public void beforeEach() {
-//        Board board = Board.builder()
-//                .writer("jiseong")
-//                .title("hello world!")
-//                .content("this is content")
-//                .build();
-//        boardRepository.save(board);
-//
-//    }
+    @BeforeEach
+    public void beforeEach() {
+        int EA = 100;
+
+        for(int i = 0; i< EA; i++) {
+            Board board = Board.builder()
+                    .writer("jiseong"+i)
+                    .title("hello world!"+i)
+                    .content("this is content"+i)
+                    .build();
+            boardRepository.save(board);
+        }
+    }
 
     @Test
     public void findBy() {
@@ -44,8 +48,9 @@ public class BoardRepositoryTests {
     @Test
     @Rollback(false)
     public void findAll() {
-        List<Board> borads = boardRepository.findAll();
-        borads.forEach(vo -> System.out.println(vo));
+        List<Board> boards = boardRepository.findAll();
+        System.out.println(boards.size());
+        boards.forEach(vo -> System.out.println(vo));
     }
 
     @Test
