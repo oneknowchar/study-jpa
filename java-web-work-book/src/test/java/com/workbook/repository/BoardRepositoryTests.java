@@ -9,6 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,19 +27,19 @@ public class BoardRepositoryTests {
     // 테스트시 BeforeEach 추천.
     // @PostConstruct
 
-    @BeforeEach
-    public void beforeEach() {
-        int EA = 100;
-
-        for(int i = 0; i< EA; i++) {
-            Board board = Board.builder()
-                    .writer("jiseong"+i)
-                    .title("hello world!"+i)
-                    .content("this is content"+i)
-                    .build();
-            boardRepository.save(board);
-        }
-    }
+//    @BeforeEach
+//    public void beforeEach() {
+//        int EA = 100;
+//
+//        for(int i = 0; i< EA; i++) {
+//            Board board = Board.builder()
+//                    .writer("jiseong"+i)
+//                    .title("hello world!"+i)
+//                    .content("this is content"+i)
+//                    .build();
+//            boardRepository.save(board);
+//        }
+//    }
 
     @Test
     public void findBy() {
@@ -74,5 +78,18 @@ public class BoardRepositoryTests {
             //커밋하는 방법?
         }
         System.out.println("tests");
+    }
+
+    @Test
+    public void pageableTest() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<Board> result = boardRepository.findAll(pageable);
+
+        System.out.println("토탈 카운트 : " + result.getTotalElements());
+        System.out.println("토탈 페이지 수 : " + result.getTotalPages());
+        System.out.println("페이지 넘버 : " + result.getNumber());
+        System.out.println("페이지 사이즈 : " + result.getSize());
+        System.out.println("본문 데이터 : " + result.getContent());
     }
 }
