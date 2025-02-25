@@ -16,15 +16,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.entity.Board;
-import com.workbook.service.BoardSearchImpl;
 
 @SpringBootTest
 @Transactional
 public class BoardRepositoryTests {
     @Autowired
     private BoardRepository boardRepository;
-    @Autowired
-    private BoardSearchImpl boardService;
 
     // 테스트시 BeforeEach 추천.
     // @PostConstruct
@@ -101,9 +98,26 @@ public class BoardRepositoryTests {
         //querydsl을 이용한 방법1
         Page<Board> result1 = boardRepository.search1ByQuerydslRepositorySupport(pageable);
 
+        System.out.println(result1.getContent());
         //querydsl을 이용한 방법2 *추천*
         Page<Board> result2 = boardRepository.search1ByJPAQueryFactory(pageable);
+    }
 
+    @Test
+    public void testSearchAll() {
+        String[]types = {"t", "c", "w"};
+        String keyword = "hello";
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<Board> result = boardRepository.searchAll(types, keyword, pageable);
+
+        System.out.println(result.getContent());
+        System.out.println(result.hasPrevious());	//false
+        System.out.println(result.hasNext());	//true
+        System.out.println(result.getNumber());	//0
+        System.out.println(result.getTotalPages());	//10
+        System.out.println(result.getTotalElements());	//100
     }
 }
 

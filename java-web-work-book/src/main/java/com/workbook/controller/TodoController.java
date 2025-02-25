@@ -1,7 +1,5 @@
 package com.workbook.controller;
 
-import java.time.LocalDate;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.workbook.dto.PageRequestDto;
-import com.workbook.dto.PageResponseDto;
 import com.workbook.dto.TodoDto;
 import com.workbook.service.TodoService;
 
