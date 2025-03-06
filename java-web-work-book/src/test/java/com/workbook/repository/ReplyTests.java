@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.workbook.dto.BoardListReplyCountDto;
 import com.workbook.entity.Board;
 import com.workbook.entity.Reply;
 
@@ -54,5 +56,21 @@ public class ReplyTests {
 
             System.out.println("writer = " + writer);
         });
+    }
+
+    @Test
+    public void testSearchReplyCount() {
+        String[] types = {"t", "c", "w"};
+
+        String keyword = "hello";
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+
+        Page<BoardListReplyCountDto> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+
+        //total pages
+        log.info("result.getTotalPages() = {}", result.getTotalPages());
+        log.info("result.getSize() = {}", result.getSize());
+        log.info("result.getNumber() = {}", result.getNumber());
     }
 }
