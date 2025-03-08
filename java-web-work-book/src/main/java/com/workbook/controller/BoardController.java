@@ -1,5 +1,8 @@
 package com.workbook.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +23,16 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/")
-    public Page<BoardListReplyCountDto> getBoardList(@RequestBody PageRequestDto pageRequestDto) {
-        return boardService.searchWithReplyCount(
+    public Map<String, Object> getBoardList(@RequestBody PageRequestDto pageRequestDto) {
+        Page<BoardListReplyCountDto>  data = boardService.searchWithReplyCount(
                 pageRequestDto.getTypes()
                 , pageRequestDto.getKeyword()
                 , pageRequestDto.getPageable("bno")
                 );
+
+        Map<String, Object>outMap = new HashMap<>();
+        outMap.put("data", data);
+        outMap.put("pageRequestDto", pageRequestDto);
+        return outMap;
     }
 }
