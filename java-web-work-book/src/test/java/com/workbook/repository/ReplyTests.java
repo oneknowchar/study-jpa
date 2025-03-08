@@ -7,12 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.dto.BoardListReplyCountDto;
 import com.workbook.entity.Board;
 import com.workbook.entity.Reply;
+import com.workbook.service.BoardService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +25,9 @@ public class ReplyTests {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardService boardService;
 
     @Test
     public void  insert() {
@@ -44,7 +47,7 @@ public class ReplyTests {
      */
 
     public void listOfBoard() {
-        Long bno = 5L;
+        Long bno = 310L;
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("rno").descending());
 
@@ -66,7 +69,7 @@ public class ReplyTests {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
 
-        Page<BoardListReplyCountDto> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+        Page<BoardListReplyCountDto> result = boardService.searchWithReplyCount(types, keyword, pageable);
 
         //total pages
         log.info("result.getTotalPages() = {}", result.getTotalPages());

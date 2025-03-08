@@ -1,7 +1,5 @@
 package com.workbook.repository;
 
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +14,15 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.workbook.entity.Board;
+import com.workbook.service.BoardService;
 
 @SpringBootTest
 @Transactional
 public class BoardRepositoryTests {
+
+    @Autowired
+    private BoardService boardService;
+
     @Autowired
     private BoardRepository boardRepository;
 
@@ -43,7 +46,6 @@ public class BoardRepositoryTests {
     @Test
     public void findBy() {
         Optional<Board> result = boardRepository.findById(2L);
-
         Board board = result.orElseThrow();
         System.out.println(board);
     }
@@ -96,11 +98,11 @@ public class BoardRepositoryTests {
     public void testSearch1() {
         Pageable pageable = PageRequest.of(1, 10, Sort.by("bno").descending());
         //querydsl을 이용한 방법1
-        Page<Board> result1 = boardRepository.search1ByQuerydslRepositorySupport(pageable);
+        Page<Board> result1 = boardService.search1ByQuerydslRepositorySupport(pageable);
 
         System.out.println(result1.getContent());
         //querydsl을 이용한 방법2 *추천*
-        Page<Board> result2 = boardRepository.search1ByJPAQueryFactory(pageable);
+        Page<Board> result2 = boardService.search1ByJPAQueryFactory(pageable);
     }
 
     @Test
@@ -110,7 +112,7 @@ public class BoardRepositoryTests {
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
 
-        Page<Board> result = boardRepository.searchAll(types, keyword, pageable);
+        Page<Board> result = boardService.searchAll(types, keyword, pageable);
 
         System.out.println(result.getContent());
         System.out.println(result.hasPrevious());	//false

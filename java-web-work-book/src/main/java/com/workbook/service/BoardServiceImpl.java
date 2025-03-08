@@ -1,32 +1,34 @@
 package com.workbook.service;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Service;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.workbook.dto.BoardListReplyCountDto;
+import com.workbook.dto.PageRequestDto;
 import com.workbook.entity.Board;
 import com.workbook.entity.QBoard;
 import com.workbook.entity.QReply;
+import com.workbook.repository.BoardRepository;
 
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardSearch {
-
-    public BoardSearchImpl() {
-        super(Board.class);
-    }
+@RequiredArgsConstructor
+public class BoardServiceImpl implements BoardService {
+    private final EntityManager em;
+    private final BoardRepository boardRepository;
 
     /**
      * 방법 1. QuerydslRepositorySuppor 장점: QuerydslRepositorySupport를 상속하여 QueryDSL
@@ -40,19 +42,18 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
     public Page<Board> search1ByQuerydslRepositorySupport(Pageable pageable) {
         QBoard board = QBoard.board;
 
-        // 쿼리 작성
-        JPQLQuery<Board> query = from(board);
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.or(board.title.contains("11"));
         booleanBuilder.or(board.content.contains("11"));
 
-        query.where(booleanBuilder);
-        query.where(board.bno.gt(0L));
-
         // 페이징 처리
-        List<Board> list = query.offset(pageable.getOffset()) // 페이징 처리
-                .limit(pageable.getPageSize()) // 페이징 처리
+        List<Board> list = new JPAQueryFactory(em)
+                .selectFrom(board)
+                .where(board.bno.gt(0).and(booleanBuilder))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         /**
@@ -60,7 +61,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
          * b1_0.bno>?
          */
 
-        long count = query.fetchCount();
+        //fetchOne의 경우 값이 없을 경우 null 이 리턴되므로 널처리 필수
+        long count = Optional.ofNullable(queryFactory.select(board.count()).from(board).fetchOne()).orElse(0L);
 
         // PageImpl을 사용해 페이징된 결과 반환
         return new PageImpl<>(list, pageable, count);
@@ -96,8 +98,11 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                 .fetch();
 
         // 전체 레코드 수 카운트
-        long count = query.select(board.count()) // count()를 사용하여 전체 개수를 구함
-                .from(board).where(board.title.contains("hello")).fetchOne(); // 단일 값 반환
+        long count = Optional.ofNullable(
+                query.select(board.count()) // count()를 사용하여 전체 개수를 구함
+                .from(board)
+                .where(board.title.contains("hello"))
+                .fetchOne()).orElse(0L); // 단일 값 반환
 
         return new PageImpl<>(list, pageable, count); // PageImpl을 사용해 페이징된 결과 반환
     }
@@ -114,7 +119,8 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
      */
     public Page<Board> searchAll(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
-        JPQLQuery<Board> query = from(board);
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
@@ -134,10 +140,20 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
             }
             }
         }
-        List<Board> list = query.where(booleanBuilder).where(board.bno.gt(0L)).offset(pageable.getOffset())
-                .limit(pageable.getPageSize()).fetch();
+        List<Board> list = queryFactory.selectFrom(board)
+                .where(booleanBuilder)
+                .where(board.bno.gt(0L))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        long count = (int) query.select(board.count()).where(booleanBuilder).where(board.bno.gt(0L)).fetchCount();
+        long count = Optional.ofNullable(
+                queryFactory.select(board.count())
+                .from(board)
+                .where(booleanBuilder)
+                .where(board.bno.gt(0L))
+                .fetchOne())
+                .orElse(0L);
 
         return new PageImpl<>(list, pageable, count);
     }
@@ -146,10 +162,10 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
 
-        JPQLQuery<Board> query = from(board).leftJoin(reply).on(reply.board.eq(board)).groupBy(board);
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
         if ((types != null && types.length > 0) && keyword != null) {
-            BooleanBuilder booleanBuilder = new BooleanBuilder();
 
             for (String type : types) {
                 switch (type) {
@@ -167,22 +183,40 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
                     }
                 }
             }	//end for
-            query.where(booleanBuilder);
         }
 
-        // bno > 0
-        query.where(board.bno.gt(0L));
+        List<BoardListReplyCountDto> dtoList = queryFactory
+                .select(Projections.bean(BoardListReplyCountDto.class,
+                        board.bno,
+                        board.title,
+                        board.writer,
+                        board.regDate,
+                        reply.count().as("replyCount")))
+                .from(board)
+                .leftJoin(reply).on(reply.board.eq(board))
+                .where(booleanBuilder)
+                .groupBy(board)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        JPQLQuery<BoardListReplyCountDto> dtoQuery = query.select(Projections.bean(BoardListReplyCountDto.class,
-                board.bno, board.title, board.writer, board.regDate, reply.count().as("replyCount")));
+        long count = Optional.ofNullable(
+                queryFactory
+                .select(board.count())
+                .from(board)
+                .where(board.bno.gt(0L).and(booleanBuilder))
+                .fetchOne())
+                .orElse(0L);
 
-        this.getQuerydsl().applyPagination(pageable, dtoQuery);
-
-        List<BoardListReplyCountDto>dtoList = dtoQuery.fetch();
-
-        long count = dtoQuery.fetchCount();
+//        JPQLQuery<BoardListReplyCountDto> dtoQuery = query.select(Projections.bean(BoardListReplyCountDto.class,
+//                board.bno, board.title, board.writer, board.regDate, reply.count().as("replyCount")));
+//
+//        this.getQuerydsl().applyPagination(pageable, dtoQuery);
+//
+//        List<BoardListReplyCountDto>dtoList = dtoQuery.fetch();
+//
+//        long count = dtoQuery.fetchCount();
 
         return new PageImpl<>(dtoList, pageable, count);
     }
-
 }
