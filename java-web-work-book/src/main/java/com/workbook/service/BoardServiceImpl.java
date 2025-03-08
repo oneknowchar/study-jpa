@@ -1,8 +1,6 @@
 package com.workbook.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.workbook.dto.BoardListReplyCountDto;
-import com.workbook.dto.PageRequestDto;
 import com.workbook.entity.Board;
 import com.workbook.entity.QBoard;
 import com.workbook.entity.QReply;
@@ -27,7 +24,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
-    private final EntityManager em;
+    private final JPAQueryFactory jpaQueryFactory;
+
     private final BoardRepository boardRepository;
 
     /**
@@ -42,14 +40,12 @@ public class BoardServiceImpl implements BoardService {
     public Page<Board> search1ByQuerydslRepositorySupport(Pageable pageable) {
         QBoard board = QBoard.board;
 
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         booleanBuilder.or(board.title.contains("11"));
         booleanBuilder.or(board.content.contains("11"));
 
         // 페이징 처리
-        List<Board> list = new JPAQueryFactory(em)
+        List<Board> list = jpaQueryFactory
                 .selectFrom(board)
                 .where(board.bno.gt(0).and(booleanBuilder))
                 .offset(pageable.getOffset())
@@ -62,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
          */
 
         //fetchOne의 경우 값이 없을 경우 null 이 리턴되므로 널처리 필수
-        long count = Optional.ofNullable(queryFactory.select(board.count()).from(board).fetchOne()).orElse(0L);
+        long count = Optional.ofNullable(jpaQueryFactory.select(board.count()).from(board).fetchOne()).orElse(0L);
 
         // PageImpl을 사용해 페이징된 결과 반환
         return new PageImpl<>(list, pageable, count);
@@ -120,8 +116,6 @@ public class BoardServiceImpl implements BoardService {
     public Page<Board> searchAll(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
 
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
         for (String type : types) {
@@ -140,7 +134,7 @@ public class BoardServiceImpl implements BoardService {
             }
             }
         }
-        List<Board> list = queryFactory.selectFrom(board)
+        List<Board> list = jpaQueryFactory.selectFrom(board)
                 .where(booleanBuilder)
                 .where(board.bno.gt(0L))
                 .offset(pageable.getOffset())
@@ -148,7 +142,7 @@ public class BoardServiceImpl implements BoardService {
                 .fetch();
 
         long count = Optional.ofNullable(
-                queryFactory.select(board.count())
+                jpaQueryFactory.select(board.count())
                 .from(board)
                 .where(booleanBuilder)
                 .where(board.bno.gt(0L))
@@ -161,8 +155,6 @@ public class BoardServiceImpl implements BoardService {
     public Page<BoardListReplyCountDto> searchWithReplyCount(String[] types, String keyword, Pageable pageable) {
         QBoard board = QBoard.board;
         QReply reply = QReply.reply;
-
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         if ((types != null && types.length > 0) && keyword != null) {
@@ -185,7 +177,7 @@ public class BoardServiceImpl implements BoardService {
             }	//end for
         }
 
-        List<BoardListReplyCountDto> dtoList = queryFactory
+        List<BoardListReplyCountDto> dtoList = jpaQueryFactory
                 .select(Projections.bean(BoardListReplyCountDto.class,
                         board.bno,
                         board.title,
@@ -201,7 +193,7 @@ public class BoardServiceImpl implements BoardService {
                 .fetch();
 
         long count = Optional.ofNullable(
-                queryFactory
+                jpaQueryFactory
                 .select(board.count())
                 .from(board)
                 .where(board.bno.gt(0L).and(booleanBuilder))
