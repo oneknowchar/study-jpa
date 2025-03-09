@@ -31,9 +31,14 @@ public class ReplyTests {
 
     @Test
     public void  insert() {
-        Board board = boardRepository.findById(5L).orElseThrow();
-        Reply reply = new Reply(null, board, "test1", "test11");
-        replyRepository.save(reply);
+        long bno = 310L;
+        Board board = boardRepository.findById(bno).orElseThrow();
+
+        int count = 100;
+        for(int i = 0; i < count; i++) {
+            Reply reply = new Reply(null, board, "test"+ i, "user"+ i);
+            replyRepository.save(reply);
+        }
     }
 
     @Test

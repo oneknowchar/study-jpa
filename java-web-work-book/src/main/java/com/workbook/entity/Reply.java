@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(exclude = "board")//toString()  함수 생성시, board객체 제외(순환참조문제)
+@ToString(exclude = {"board"})//toString()  함수 생성시, board객체 제외(순환참조문제)
 @Table(name = "Reply", indexes = {
         //Reply 테이블에는 bno 컬럼이 생성되므로, 인덱스 설정도 bno로 맞춰야 합니다. (board_bno ==> bno)
         @Index(name="idx_reply_board_bno", columnList = "bno")
