@@ -177,13 +177,20 @@ public class BoardServiceImpl implements BoardService {
             }	//end for
         }
 
+        /*
+         * Projections.bean();
+         * 프로젝션이라 하며 jpql결과를 바로 DTO로 처리할 수 있는 기능(querydsl도 마찬가지).
+         * "조회 성능이 중요한 곳(Projections)"과 "일반적인 변환 작업(ModelMapper)"
+         * 쿼리 최적화 vs 자동화 & 일관성 유지
+         * ModelMapper로 우선 개발을 마치고, 코드 안정화, 성능 모니터링을 통해 프로젝션으로 변환하라
+         */
         List<BoardListReplyCountDto> dtoList = jpaQueryFactory
-                .select(Projections.bean(BoardListReplyCountDto.class,
-                        board.bno,
-                        board.title,
-                        board.writer,
-                        board.regDate,
-                        reply.count().as("replyCount")))
+                .select(Projections.bean(BoardListReplyCountDto.class
+                        , board.bno
+                        , board.title
+                        , board.writer
+                        , board.regDate
+                        , reply.count().as("replyCount")))
                 .from(board)
                 .leftJoin(reply).on(reply.board.eq(board))
                 .where(booleanBuilder)
