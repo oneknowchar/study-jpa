@@ -1,6 +1,20 @@
 server:
   port: 8088
+
+org:
+  zerock:
+    upload:
+      path: C:\\upload
+
 spring:
+  servlet:
+    multipart: 
+      enabled: true
+      location: C:\\upload
+      max-request-size: 30MB
+      max-file-size: 10MB
+  
+  
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
